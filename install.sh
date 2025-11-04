@@ -11,7 +11,6 @@ Description=Discord Bot Service
 After=network.target
 
 [Service]
-User=%u
 WorkingDirectory=%h/discord-bot/
 EnvironmentFile=%h/discord-bot/.env
 ExecStart=%h/discord-bot/venv/bin/python %h/discord-bot/main.py
