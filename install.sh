@@ -16,7 +16,7 @@ After=network.target
 User=$USER
 WorkingDirectory=$BOT_ROOT
 EnvironmentFile=/etc/environment
-ExecStart=$BOT_ROOT/venv/bin/python $BOT_ROOT/discord-bot/main.py
+ExecStart=$BOT_ROOT/venv/bin/python $BOT_ROOT/main.py
 Restart=always
 RestartSec=5
 
