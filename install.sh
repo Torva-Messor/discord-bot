@@ -1,7 +1,5 @@
 #!/bin/bash
 
-BOT_ROOT="$HOME/discord-bot"
-USER="deploy"
 SYSTEMD_PATH="$HOME/.config/systemd/user"
 
 mkdir -p "$SYSTEMD_PATH"
@@ -13,10 +11,10 @@ Description=Discord Bot Service
 After=network.target
 
 [Service]
-User=$USER
-WorkingDirectory=$BOT_ROOT
-EnvironmentFile=/etc/environment
-ExecStart=$BOT_ROOT/venv/bin/python $BOT_ROOT/main.py
+User=%u
+WorkingDirectory=%h/discord-bot/
+EnvironmentFile=%h/discord-bot/.env
+ExecStart=%h/discord-bot/venv/bin/python %h/discord-bot/main.py
 Restart=always
 RestartSec=5
 
