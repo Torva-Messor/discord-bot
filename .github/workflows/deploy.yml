@@ -32,12 +32,12 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
           # Add host to known_hosts
-          ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+          ssh-keyscan -H "${{ SSH_HOST }}" >> ~/.ssh/known_hosts
 
       - name: Deploy via SSH
         run: |
           ssh -o StrictHostKeyChecking=yes \
-              ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+              ${{ secrets.SSH_USER }}@${{ SSH_HOST }} << 'EOF'
                 cd /home/QuantifiedQuantum/discord-bot
                 sh deploy.sh
           EOF
