@@ -15,11 +15,13 @@ Libraries Used:
 - python-dotenv for loading .env
 """
 
+from pathlib import Path
 import time
 from discord.ext import commands
 from discord.message import Message
 from discord import Intents, Object
 from dotenv import load_dotenv
+from plugin_loader import find_plugins
 from os import environ
 import asyncio
 
@@ -78,7 +80,7 @@ async def main():
 
     bot = Bot(
         intents=intents,
-        command_prefix="!",
+        command_prefix=commands.when_mentioned_or('!'),
         application_id=int(app_id)
     )
 
@@ -86,9 +88,12 @@ async def main():
     if not token:
         raise ValueError("Missing TOKEN environment variable")
 
-    # Load status plugin (must exist in project)
-    await bot.load_extension("plugins.status.main")
-    print("Loaded extension: plugins.status.main")
+    plugins_dir = Path("plugins/")
+    plugins = find_plugins(plugins_dir)
+
+    for plugin in plugins:
+        print(f'Loading Plugin {plugin.module_path=}')
+        await bot.load_extension(plugin.module_path)
 
     # Start the bot session
     await bot.start(token=token)

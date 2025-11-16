@@ -35,12 +35,6 @@ Create a `.env` file:
 
 ---
 
-## Files
-
-    main.py                # Bot startup
-    plugins/status/main.py # Status command
-    requirements.txt       # Dependencies
-
 ---
 
 ## License
