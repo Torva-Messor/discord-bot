@@ -10,19 +10,34 @@ jobs:
 
     steps:
       - name: Checkout code
-      # Get the latest repository code
         uses: actions/checkout@v4
+
+      - name: Validate Secrets
+        run: |
+          if [ -z "${{ secrets.SSH_HOST }}" ]; then
+            echo "SSH_HOST secret is missing"; exit 1;
+          fi
+          if [ -z "${{ secrets.SSH_USER }}" ]; then
+            echo "SSH_USER secret is missing"; exit 1;
+          fi
+          if [ -z "${{ secrets.SSH_KEY }}" ]; then
+            echo "SSH_KEY secret is missing"; exit 1;
+          fi
+        shell: bash
 
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          printf "%s" "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+
+          # Add host to known_hosts
           ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
 
       - name: Deploy via SSH
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd /home/QuantifiedQuantum/discord-bot
-            sh deploy.sh
+          ssh -o StrictHostKeyChecking=yes \
+              ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+                cd /home/QuantifiedQuantum/discord-bot
+                sh deploy.sh
           EOF
