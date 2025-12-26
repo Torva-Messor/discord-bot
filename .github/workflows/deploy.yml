@@ -24,12 +24,12 @@ jobs:
 
             git pull origin main
 
-            docker build -t discord-bot .
+            sudo docker build -t discord-bot .
 
-            docker stop discord-bot || true
-            docker rm discord-bot || true
+            sudo docker stop discord-bot || true
+            sudo docker rm discord-bot || true
 
-            docker run -d \
+            sudo docker run -d \
               --name discord-bot \
               --restart unless-stopped \
               discord-bot
