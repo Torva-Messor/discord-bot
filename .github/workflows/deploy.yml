@@ -20,6 +20,7 @@ jobs:
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
+            mkdir /opt/discord-bot -p
             cd /opt/discord-bot
 
             git pull origin main
