@@ -7,9 +7,10 @@ Includes a status command that shows latency, uptime, and memory usage.
 ---
 
 ## Requirements
-
-- Python 3.10 or newer
-- A Discord bot token and application ID
+- uv package manager
+- A Discord bot token
+- App ID(BOT ID)
+- GUILD ID
 
 Install packages:
 
@@ -25,13 +26,12 @@ Create a `.env` file:
     APP_ID=your_application_id_here
     GUILD_ID=your_guild_id_here
 
-`GUILD_ID` makes slash commands update faster but is optional.
 
 ---
 
 ## Run
 
-    python main.py
+    uv run main.py
 
 ---
 
