@@ -1,43 +1,36 @@
 name: Deploy Discord Bot
+
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: 'Discord Bot Deployment'
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Validate Secrets
-        run: |
-          if [ -z "${{ secrets.SSH_HOST }}" ]; then
-            echo "SSH_HOST secret is missing"; exit 1;
-          fi
-          if [ -z "${{ secrets.SSH_USER }}" ]; then
-            echo "SSH_USER secret is missing"; exit 1;
-          fi
-          if [ -z "${{ secrets.SSH_KEY }}" ]; then
-            echo "SSH_KEY secret is missing"; exit 1;
-          fi
-        shell: bash
-
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
           printf "%s" "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
- 
-          # Add host to known_hosts
           ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
 
       - name: Deploy via SSH
         run: |
-          ssh -o StrictHostKeyChecking=yes \
-              ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-                cd /opt/discord-bot
-                sh deploy.sh
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            set -e
+            cd /opt/discord-bot
+
+            git pull origin main
+
+            docker build -t discord-bot .
+
+            docker stop discord-bot || true
+            docker rm discord-bot || true
+
+            docker run -d \
+              --name discord-bot \
+              --restart unless-stopped \
+              discord-bot
           EOF
