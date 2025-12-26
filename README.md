@@ -14,7 +14,7 @@ Includes a status command that shows latency, uptime, and memory usage.
 
 Install packages:
 
-    pip install -r requirements.txt
+    uv sync
 
 ---
 
