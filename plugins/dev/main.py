@@ -2,6 +2,8 @@ from discord import Embed, Interaction
 from main import Bot
 from discord.ext import commands
 from discord import app_commands
+
+from plugins.dev.views.plugin import PluginView
 class Dev(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
@@ -29,8 +31,7 @@ class Dev(commands.Cog):
 
     @commands.hybrid_group(name='plugin')
     async def plugin(self, ctx: commands.Context[Bot]):
-        if ctx.invoked_subcommand is None:
-            pass
+        await ctx.reply(view=PluginView(bot=self.bot))
 
     @plugin.command('list')
     async def plugins_list(self, ctx: commands.Context[Bot]):
