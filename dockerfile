@@ -3,3 +3,5 @@ COPY pyproject.toml uv.lock /app/
 WORKDIR /app
 RUN uv sync --locked
 COPY . /app
+
+CMD ["uv", "run", "python", "main.py"]
