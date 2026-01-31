@@ -43,6 +43,7 @@ jobs:
 
             # Run with environment variables
             sudo docker run -d \
+               --no-cache -t \
               --name discord-bot \
               --restart unless-stopped \
               -e DISCORD_TOKEN="${{ secrets.DISCORD_TOKEN }}" \
