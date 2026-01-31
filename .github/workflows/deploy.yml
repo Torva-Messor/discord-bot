@@ -9,10 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     environment: 'Discord Bot Deployment'
     steps:
+      - name: Checkout (Optional but good practice)
+        uses: actions/checkout@v4
+
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          printf "%s" "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
 
@@ -20,18 +23,28 @@ jobs:
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
-            mkdir /opt/discord-bot -p
-            cd /opt/discord-bot
+            
+            # Ensure directory exists and is a git repo
+            if [ ! -d "/opt/discord-bot/.git" ]; then
+              sudo mkdir -p /opt/discord-bot
+              sudo chown ${{ secrets.SSH_USER }}:${{ secrets.SSH_USER }} /opt/discord-bot
+              git clone https://github.com/${{ github.repository }}.git /opt/discord-bot
+            fi
 
+            cd /opt/discord-bot
             git pull origin main
 
+            # Build image
             sudo docker build -t discord-bot .
 
+            # Stop and remove old container
             sudo docker stop discord-bot || true
             sudo docker rm discord-bot || true
 
+            # Run with environment variables
             sudo docker run -d \
               --name discord-bot \
               --restart unless-stopped \
+              -e DISCORD_TOKEN="${{ secrets.DISCORD_TOKEN }}" \
               discord-bot
           EOF
