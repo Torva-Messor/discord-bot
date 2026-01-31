@@ -35,7 +35,7 @@ jobs:
             git pull origin main
 
             # Build image
-            sudo docker build -t discord-bot .
+            sudo docker build --no-cache -t discord-bot .
 
             # Stop and remove old container
             sudo docker stop discord-bot || true
@@ -43,7 +43,6 @@ jobs:
 
             # Run with environment variables
             sudo docker run -d \
-               --no-cache -t \
               --name discord-bot \
               --restart unless-stopped \
               -e DISCORD_TOKEN="${{ secrets.DISCORD_TOKEN }}" \
