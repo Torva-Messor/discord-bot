@@ -45,7 +45,7 @@ class PluginView(ui.LayoutView):
         plugins = find_plugins(base_dir=Path('plugins').absolute().resolve())
         
         self.container = ui.Container(
-            ui.TextDisplay("# Plugins"),
+            ui.TextDisplay("### Plugins"),
             ui.Separator(),
             *[PluginSection(bot=self.bot, plugin=plugin) for plugin in plugins],
             ui.Separator(),
@@ -53,4 +53,7 @@ class PluginView(ui.LayoutView):
             ui.TextDisplay(f"-# count: {len(plugins)}")
         )
         
+        
         self.add_item(self.container)
+
+    
