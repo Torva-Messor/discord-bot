@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
- 
+
 
 from main import Bot
 class Moderation(commands.Cog):
@@ -9,11 +9,35 @@ class Moderation(commands.Cog):
     """
     def __init__(self, bot: Bot):
         self.bot = bot
+    # NOTTESTED
+    @commands.hybrid_command(
+            description="unban someone"
+    )
+    async def unban(self, ctx: commands.Context[Bot], member: discord.Member):
+        if member == ctx.author:
+            return await ctx.reply("You can't unban yourself!", mention_author=False)
+
+        try:
+            await member.unban()
+            
+            if ctx.interaction:
+                await ctx.interaction.response.send_message(
+                    f"🔨 Unbanned {member}"
+                    ,ephemeral=True
+                )
+            else:
+                await ctx.send(f"🔨 Unbanned {member}", ephemeral=True)
+        except discord.Forbidden:
+            await ctx.reply("I don't have permission to unban that user.", mention_author=False, ephemeral=True)
+        except Exception as e:
+            await ctx.reply(f"Error: {e}", mention_author=False)
+    
 
     @commands.hybrid_command(
         name="ban",
         description="Bans someone"
     )
+
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx: commands.Context[Bot], member: discord.Member, *, reason: str = "No reason provided"):
         if member == ctx.author:
