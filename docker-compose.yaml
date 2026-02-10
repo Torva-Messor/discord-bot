@@ -1,0 +1,19 @@
+services:
+  bot:
+    build: .
+    restart: always
+    volumes:
+      - .:/app
+      - /app/.venv 
+    env_file:
+      - .env        
+    environment:
+      - PYTHONUNBUFFERED=1
+      - UV_LINK_MODE=copy
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10mb"
+        max-file: "3"
+  
