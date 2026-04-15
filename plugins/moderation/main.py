@@ -11,6 +11,7 @@ class Moderation(commands.Cog):
         self.bot = bot
     # NOTTESTED
     @commands.hybrid_command(
+            name="unban":
             description="unban someone"
     )
     async def unban(self, ctx: commands.Context[Bot], member: discord.Member):
